@@ -1,0 +1,80 @@
+{{- if .Values.mqtt.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mqtt
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+    app.kubernetes.io/component: broker
+spec:
+  replicas: {{ .Values.mqtt.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "prigossip.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: broker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "prigossip.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: broker
+    spec:
+      containers:
+        - name: mosquitto
+          image: "{{ .Values.mqtt.image.repository }}:{{ .Values.mqtt.image.tag }}"
+          ports:
+            - name: mqtt
+              containerPort: {{ .Values.mqtt.servicePort }}
+          readinessProbe:
+            tcpSocket:
+              port: mqtt
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 64Mi
+          volumeMounts:
+            - name: config
+              mountPath: /mosquitto/config
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-mqtt-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-mqtt-config
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+data:
+  mosquitto.conf: |
+    listener {{ .Values.mqtt.servicePort }}
+    allow_anonymous true
+    persistence false
+    # Endpoint descriptors and agent announcements are transient telemetry;
+    # retention is applied per topic by the publishers.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mqtt
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+    app.kubernetes.io/component: broker
+spec:
+  selector:
+    app.kubernetes.io/name: {{ include "prigossip.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: broker
+  ports:
+    - name: mqtt
+      port: {{ .Values.mqtt.servicePort }}
+      targetPort: mqtt
+{{- end }}

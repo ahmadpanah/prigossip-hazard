@@ -1,0 +1,42 @@
+{{- if .Values.rbac.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "prigossip.serviceAccountName" . }}
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "prigossip.fullname" . }}-agent
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+rules:
+  # client-go cache: Pod lifecycle mutations, Endpoint slices and Node status.
+  - apiGroups: [""]
+    resources: ["pods", "endpoints", "services", "nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "list", "watch"]
+  # QoSPolicy custom resources declared by operators.
+  - apiGroups: ["networking.continuum.io"]
+    resources: ["qospolicies", "qospolicies/status"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "prigossip.fullname" . }}-agent
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "prigossip.fullname" . }}-agent
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "prigossip.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

@@ -1,0 +1,131 @@
+{{- if .Values.rbac.create }}
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: qospolicies.networking.continuum.io
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+spec:
+  group: networking.continuum.io
+  scope: Namespaced
+  names:
+    plural: qospolicies
+    singular: qospolicy
+    kind: QoSPolicy
+    shortNames:
+      - qosp
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: TauMs
+          type: number
+          jsonPath: .spec.qosTargets.latencyThresholdMs
+        - name: Rho
+          type: number
+          jsonPath: .spec.qosTargets.successRatio
+        - name: Epsilon
+          type: number
+          jsonPath: .spec.gossipConfig.privacyEpsilon
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: ["spec"]
+          properties:
+            spec:
+              type: object
+              required: ["selector", "qosTargets"]
+              properties:
+                selector:
+                  type: object
+                  properties:
+                    matchLabels:
+                      type: object
+                      additionalProperties:
+                        type: string
+                qosTargets:
+                  type: object
+                  required: ["latencyThresholdMs", "successRatio", "slidingWindowSec"]
+                  properties:
+                    latencyThresholdMs:
+                      type: number
+                      minimum: 1
+                    successRatio:
+                      type: number
+                      exclusiveMinimum: true
+                      minimum: 0
+                      maximum: 1
+                    slidingWindowSec:
+                      type: number
+                      minimum: 1
+                gossipConfig:
+                  type: object
+                  properties:
+                    privacyEpsilon:
+                      type: number
+                      minimum: 0.01
+                    intervalSec:
+                      type: number
+                      minimum: 0.1
+                    learningRate:
+                      type: number
+                      exclusiveMinimum: true
+                      minimum: 0
+                      exclusiveMaximum: true
+                      maximum: 1
+                hazardParams:
+                  type: object
+                  properties:
+                    weibullShape:
+                      type: number
+                      exclusiveMinimum: true
+                      minimum: 0
+                    scaleParamSec:
+                      type: number
+                      exclusiveMinimum: true
+                      minimum: 0
+                    errorThreshold:
+                      type: integer
+                      minimum: 1
+                    betaOmega:
+                      type: number
+                    betaLatency:
+                      type: number
+                dispatch:
+                  type: object
+                  properties:
+                    volatilityTheta:
+                      type: number
+                      minimum: 0
+                    minRegularizer:
+                      type: number
+                      minimum: 0
+                    exploreDecay:
+                      type: number
+                      exclusiveMinimum: true
+                      minimum: 0
+                      maximum: 1
+                    exploreReset:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+                instances:
+                  type: integer
+                  minimum: 1
+                maxLatencyMs:
+                  type: number
+                  minimum: 1
+            status:
+              type: object
+              properties:
+                readyAgents:
+                  type: integer
+                observedGeneration:
+                  type: integer
+{{- end }}

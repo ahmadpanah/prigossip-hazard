@@ -1,0 +1,13 @@
+topology,source,destination,avg_rtt_ms,stddev_ms,samples
+t4,Stockholm,Helsinki,35.32,1.92,30
+t4,Stockholm,Oslo,28.00,1.44,30
+t4,Stockholm,Copenhagen,38.83,2.15,30
+t4,Helsinki,Stockholm,35.32,1.92,30
+t4,Helsinki,Oslo,22.32,1.08,30
+t4,Helsinki,Copenhagen,18.51,0.83,30
+t4,Oslo,Stockholm,28.00,1.44,30
+t4,Oslo,Helsinki,22.32,1.08,30
+t4,Oslo,Copenhagen,25.83,1.30,30
+t4,Copenhagen,Stockholm,38.83,2.15,30
+t4,Copenhagen,Helsinki,18.51,0.83,30
+t4,Copenhagen,Oslo,25.83,1.30,30

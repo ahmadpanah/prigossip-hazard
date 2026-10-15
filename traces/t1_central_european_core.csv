@@ -1,0 +1,13 @@
+topology,source,destination,avg_rtt_ms,stddev_ms,samples
+t1,Frankfurt,Munich,13.94,0.61,30
+t1,Frankfurt,Zurich,22.44,1.16,30
+t1,Frankfurt,Vienna,15.10,0.68,30
+t1,Munich,Frankfurt,13.94,0.61,30
+t1,Munich,Zurich,20.50,1.03,30
+t1,Munich,Vienna,13.17,0.56,30
+t1,Zurich,Frankfurt,22.44,1.16,30
+t1,Zurich,Munich,20.50,1.03,30
+t1,Zurich,Vienna,19.33,0.96,30
+t1,Vienna,Frankfurt,15.10,0.68,30
+t1,Vienna,Munich,13.17,0.56,30
+t1,Vienna,Zurich,19.33,0.96,30

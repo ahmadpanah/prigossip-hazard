@@ -1,0 +1,13 @@
+topology,source,destination,avg_rtt_ms,stddev_ms,samples
+t5,Dublin,Bucharest,70.06,3.68,30
+t5,Dublin,Lisbon,40.27,1.74,30
+t5,Dublin,Warsaw,40.95,1.79,30
+t5,Bucharest,Dublin,70.06,3.68,30
+t5,Bucharest,Lisbon,75.34,4.02,30
+t5,Bucharest,Warsaw,64.11,3.29,30
+t5,Lisbon,Dublin,40.27,1.74,30
+t5,Lisbon,Bucharest,75.34,4.02,30
+t5,Lisbon,Warsaw,46.22,2.13,30
+t5,Warsaw,Dublin,40.95,1.79,30
+t5,Warsaw,Bucharest,64.11,3.29,30
+t5,Warsaw,Lisbon,46.22,2.13,30

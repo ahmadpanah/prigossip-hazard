@@ -1,0 +1,31 @@
+PriGossip-Hazard has been installed.
+
+Release : {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+Service : {{ .Values.service.name }} (tau = {{ .Values.qosTargets.latencyThresholdMs }} ms,
+          rho = {{ .Values.qosTargets.successRatio }}, W = {{ .Values.qosTargets.slidingWindowSec }} s)
+Privacy : epsilon = {{ .Values.gossipConfig.privacyEpsilon }} (LDP), H_gossip = {{ .Values.gossipConfig.intervalSec }} s
+Hazard  : Weibull kappa = {{ .Values.hazardParams.weibullShape }}, lambda_s = {{ .Values.hazardParams.scaleParamSec }} s,
+          E_t = {{ .Values.hazardParams.errorThreshold }}
+
+1. Inspect one agent's live state:
+
+   kubectl -n {{ .Release.Namespace }} port-forward ds/{{ include "prigossip.fullname" . }}-agent {{ .Values.agent.adminPort }}:{{ .Values.agent.adminPort }}
+   curl -s localhost:{{ .Values.agent.adminPort }}/status | jq
+
+2. Confirm gossip is exchanging sketches (UDP/{{ .Values.agent.gossipPort }}):
+
+   kubectl -n {{ .Release.Namespace }} exec ds/{{ include "prigossip.fullname" . }}-agent -- \
+     wget -qO- localhost:{{ .Values.agent.adminPort }}/gossip/peers
+
+3. The QoSPolicy custom resource is:
+
+   kubectl -n {{ .Release.Namespace }} get qospolicies
+
+{{- if .Values.ebpf.enabled }}
+
+NOTE: the eBPF data plane needs the compiled objects installed on every node
+(`make -C bpf install` -> {{ .Values.ebpf.hostPath }}) and a CNI with socket-level
+load balancing (Cilium >= 1.14). Without them the agent still routes, gossips
+and quarantines, but measures latency in user space.
+{{- end }}

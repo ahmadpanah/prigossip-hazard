@@ -1,0 +1,9 @@
+bin/
+dist/
+*.o
+*.ll
+*.bc
+*.pdf
+.toolchain/
+coverage.out
+*.test

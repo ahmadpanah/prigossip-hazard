@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "prigossip.fullname" . }}-policy
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+data:
+  # JSON projection of the QoSPolicy custom resource consumed by the agent.
+  policy.json: |
+    {
+      "service": {{ .Values.service.name | quote }},
+      "qosTargets": {
+        "latencyThresholdMs": {{ .Values.qosTargets.latencyThresholdMs }},
+        "successRatio": {{ .Values.qosTargets.successRatio }},
+        "slidingWindowSec": {{ .Values.qosTargets.slidingWindowSec }}
+      },
+      "gossipConfig": {
+        "privacyEpsilon": {{ .Values.gossipConfig.privacyEpsilon }},
+        "intervalSec": {{ .Values.gossipConfig.intervalSec }},
+        "learningRate": {{ .Values.gossipConfig.learningRate }}
+      },
+      "hazardParams": {
+        "weibullShape": {{ .Values.hazardParams.weibullShape }},
+        "scaleParamSec": {{ .Values.hazardParams.scaleParamSec }},
+        "errorThreshold": {{ .Values.hazardParams.errorThreshold }},
+        "betaOmega": {{ .Values.hazardParams.betaOmega }},
+        "betaLatency": {{ .Values.hazardParams.betaLatency }}
+      },
+      "dispatch": {
+        "volatilityTheta": {{ .Values.dispatch.volatilityTheta }},
+        "minRegularizer": {{ .Values.dispatch.minRegularizer }},
+        "exploreDecay": {{ .Values.dispatch.exploreDecay }},
+        "exploreReset": {{ .Values.dispatch.exploreReset }}
+      },
+      "instances": {{ .Values.instances }},
+      "maxLatencyMs": {{ .Values.maxLatencyMs }}
+    }
+
+  # Endpoint descriptor schema published on
+  # k8s/continuum/services/<service>/endpoints/+ (binary JSON).
+  endpoints.schema.json: |
+    {
+      "service": "string",
+      "endpoints": [ { "name": "string", "ip": "string", "port": 0, "node": "string" } ]
+    }

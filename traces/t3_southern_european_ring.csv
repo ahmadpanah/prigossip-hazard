@@ -1,0 +1,13 @@
+topology,source,destination,avg_rtt_ms,stddev_ms,samples
+t3,Milan,Madrid,28.28,1.24,30
+t3,Milan,Marseille,24.24,0.98,30
+t3,Milan,Rome,48.36,2.54,30
+t3,Madrid,Milan,28.28,1.24,30
+t3,Madrid,Marseille,28.52,1.25,30
+t3,Madrid,Rome,44.08,2.27,30
+t3,Marseille,Milan,24.24,0.98,30
+t3,Marseille,Madrid,28.52,1.25,30
+t3,Marseille,Rome,48.60,2.56,30
+t3,Rome,Milan,48.36,2.54,30
+t3,Rome,Madrid,44.08,2.27,30
+t3,Rome,Marseille,48.60,2.56,30

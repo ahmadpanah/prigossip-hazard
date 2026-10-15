@@ -1,0 +1,28 @@
+{
+  "service": "vision-ai",
+  "qosTargets": {
+    "latencyThresholdMs": 80,
+    "successRatio": 0.9,
+    "slidingWindowSec": 10
+  },
+  "gossipConfig": {
+    "privacyEpsilon": 1.0,
+    "intervalSec": 2.0,
+    "learningRate": 0.35
+  },
+  "hazardParams": {
+    "weibullShape": 1.85,
+    "scaleParamSec": 6.5,
+    "errorThreshold": 5,
+    "betaOmega": 0.45,
+    "betaLatency": 0.02
+  },
+  "dispatch": {
+    "volatilityTheta": 3.5,
+    "minRegularizer": 0.01,
+    "exploreDecay": 0.98,
+    "exploreReset": 0.1
+  },
+  "instances": 4,
+  "maxLatencyMs": 160
+}

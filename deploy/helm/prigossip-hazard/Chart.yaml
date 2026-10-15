@@ -1,0 +1,20 @@
+apiVersion: v2
+name: prigossip-hazard
+description: >
+  PriGossip-Hazard — decentralized, privacy-preserving and
+  oscillation-resilient QoS-aware edge load balancing (epsilon-LDP gossip +
+  Cox survival quarantine) for the Computing Continuum.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - edge-computing
+  - load-balancing
+  - qos
+  - differential-privacy
+  - ebpf
+  - kubernetes
+home: https://github.com/ahmadpanah/prigossip-hazard
+maintainers:
+  - name: Seyed Hossein Ahmadpanah
+  - name: AhmadReza Montazerolghaem

@@ -1,0 +1,6 @@
+topology,name,cities,min_rtt_ms,max_rtt_ms,pairs
+t1,Central European Core,4,12.0,38.0,12
+t2,Western European Corridor,4,18.0,45.0,12
+t3,Southern European Ring,4,24.0,62.0,12
+t4,Nordic-Baltic Mesh,4,15.0,52.0,12
+t5,Pan-European High-Diameter Transit,4,35.0,110.0,12

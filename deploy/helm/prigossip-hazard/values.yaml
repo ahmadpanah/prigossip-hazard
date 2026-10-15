@@ -1,0 +1,89 @@
+# Default values for the PriGossip-Hazard chart.
+# Values mirror Table "Architectural Provenance, Parameterization, and
+# Implementation Mapping of Benchmark Baselines".
+
+image:
+  repository: ghcr.io/ahmadpanah/prigossip-hazard
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+# Managed workload.
+service:
+  name: vision-ai
+  backendPort: 8000
+  # Label selector of the QoS-managed pods (must match spec.selector).
+  selector: "app=vision-ai"
+
+agent:
+  listenPort: 8080
+  adminPort: 9090
+  gossipPort: 9443
+  # Gossip peers discovered over MQTT; extra static peers (comma separated).
+  extraPeers: ""
+
+# QoSPolicy values -> networking.continuum.io/v1alpha1 custom resource.
+qosTargets:
+  latencyThresholdMs: 80     # tau
+  successRatio: 0.90         # rho
+  slidingWindowSec: 10       # W
+
+gossipConfig:
+  privacyEpsilon: 1.0        # epsilon-LDP budget
+  intervalSec: 2.0           # H_gossip
+  learningRate: 0.35         # alpha_g
+
+hazardParams:
+  weibullShape: 1.85         # kappa > 1 (positive duration dependence)
+  scaleParamSec: 6.5         # lambda_s
+  errorThreshold: 5          # E_t
+  betaOmega: 0.45            # covariate weight for peer volatility
+  betaLatency: 0.02          # covariate weight for WAN transit latency
+
+dispatch:
+  volatilityTheta: 3.5       # theta, volatility penalty
+  minRegularizer: 0.01       # eta, minimum pool score
+  exploreDecay: 0.98         # epsilon-decay per maintenance epoch
+  exploreReset: 0.10         # epsilon reset trigger (1 - rho)
+
+# Instance count M of the managed service.
+instances: 10
+maxLatencyMs: 160            # tau_max: bounds the LDP sensitivity tau_max^2/n_min
+
+# Optional QoS-labelled namespace for the informer.
+informer:
+  namespace: ""
+  resyncSeconds: 30
+
+mqtt:
+  enabled: true
+  image:
+    repository: eclipse-mosquitto
+    tag: "2.0"
+  replicaCount: 1
+  servicePort: 1883
+
+# eBPF data plane. Requires CAP_BPF/CAP_SYS_ADMIN and a Cilium-enabled CNI.
+ebpf:
+  enabled: true
+  objDir: /var/lib/prigossip-hazard/bpf
+  cgroupRoot: /sys/fs/cgroup
+  # Host path that holds the compiled objects produced by `make -C bpf install`.
+  hostPath: /var/lib/prigossip-hazard/bpf
+
+rbac:
+  create: true
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: "0.35"
+    memory: 128Mi
+
+nodeSelector: {}
+tolerations:
+  - operator: Exists
+affinity: {}
+
+podAnnotations: {}

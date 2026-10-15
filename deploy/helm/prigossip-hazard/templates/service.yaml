@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "prigossip.fullname" . }}-admin
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+spec:
+  # Headless: every agent is an independent endpoint, exactly like the
+  # DaemonSet pods that gossip with each other on UDP/9443.
+  clusterIP: None
+  selector:
+    {{- include "prigossip.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: forwarding
+      port: {{ .Values.agent.listenPort }}
+      targetPort: http
+    - name: admin
+      port: {{ .Values.agent.adminPort }}
+      targetPort: admin
+    - name: gossip
+      port: {{ .Values.agent.gossipPort }}
+      protocol: UDP
+      targetPort: gossip

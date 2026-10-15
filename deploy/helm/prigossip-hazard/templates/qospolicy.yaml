@@ -1,0 +1,33 @@
+{{- if .Values.rbac.create }}
+apiVersion: networking.continuum.io/v1alpha1
+kind: QoSPolicy
+metadata:
+  name: {{ .Values.service.name }}-sla
+  labels:
+    {{- include "prigossip.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+{{ .Values.service.selector | indent 6 }}
+  qosTargets:
+    latencyThresholdMs: {{ .Values.qosTargets.latencyThresholdMs }}
+    successRatio: {{ .Values.qosTargets.successRatio }}
+    slidingWindowSec: {{ .Values.qosTargets.slidingWindowSec }}
+  gossipConfig:
+    privacyEpsilon: {{ .Values.gossipConfig.privacyEpsilon }}
+    intervalSec: {{ .Values.gossipConfig.intervalSec }}
+    learningRate: {{ .Values.gossipConfig.learningRate }}
+  hazardParams:
+    weibullShape: {{ .Values.hazardParams.weibullShape }}
+    scaleParamSec: {{ .Values.hazardParams.scaleParamSec }}
+    errorThreshold: {{ .Values.hazardParams.errorThreshold }}
+    betaOmega: {{ .Values.hazardParams.betaOmega }}
+    betaLatency: {{ .Values.hazardParams.betaLatency }}
+  dispatch:
+    volatilityTheta: {{ .Values.dispatch.volatilityTheta }}
+    minRegularizer: {{ .Values.dispatch.minRegularizer }}
+    exploreDecay: {{ .Values.dispatch.exploreDecay }}
+    exploreReset: {{ .Values.dispatch.exploreReset }}
+  instances: {{ .Values.instances }}
+  maxLatencyMs: {{ .Values.maxLatencyMs }}
+{{- end }}

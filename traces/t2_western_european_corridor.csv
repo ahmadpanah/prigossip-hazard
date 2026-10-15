@@ -1,0 +1,13 @@
+topology,source,destination,avg_rtt_ms,stddev_ms,samples
+t2,London,Paris,33.62,1.74,30
+t2,London,Brussels,29.00,1.44,30
+t2,London,Amsterdam,23.59,1.08,30
+t2,Paris,London,33.62,1.74,30
+t2,Paris,Brussels,22.62,1.02,30
+t2,Paris,Amsterdam,39.21,2.10,30
+t2,Brussels,London,29.00,1.44,30
+t2,Brussels,Paris,22.62,1.02,30
+t2,Brussels,Amsterdam,34.59,1.80,30
+t2,Amsterdam,London,23.59,1.08,30
+t2,Amsterdam,Paris,39.21,2.10,30
+t2,Amsterdam,Brussels,34.59,1.80,30
